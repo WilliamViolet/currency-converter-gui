@@ -1,0 +1,22 @@
+# python
+venv/
+dist/
+
+# pytest
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.pyc
+*.cover
+.coverage
+.coverage.*
+# poetry
+poetry.lock
+
+# secrets
+secrets.json
+
+# logger
+*.log
