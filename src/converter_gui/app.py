@@ -29,4 +29,4 @@ def main():
         ]
     )
     main_window = MainWindow()
-    main_window.start()
+    main_window.create_create_acount_ui()
