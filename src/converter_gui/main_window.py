@@ -89,4 +89,4 @@ class MainWindow():
             self.result.setText(result)
         except Exception as e:
             self._logger.error(f"Failed to convert: {e}")
-            QMessageBox.critical(None, "Error", f"Failed to convert: {e}")
+            QMessageBox.critical(self.window, "Error", f"Failed to convert: {e}")

@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch
 from unittest.mock import MagicMock
 from converter_gui.main_window import MainWindow
+from PyQt5.QtWidgets import QMessageBox
 
 class TestMainWindow(unittest.TestCase):
     @patch("converter_gui.messaging.converter_client.ConverterClient.get_supported_currencies")
@@ -21,15 +22,22 @@ class TestMainWindow(unittest.TestCase):
         client.convert.assert_called_with("USD", "EUR", "5.00")
         self.main_window.result.setText.assert_called_with("10.00")
 
-    # def test_convert_exception(self):
-    #     client = MagicMock()
-    #     client.convert.side_effect = Exception("Conversion failed")
-    #     self.main_window._logger = MagicMock()
-    #     self.main_window.result = MagicMock()
+    def test_convert_exception(self):
+        client = MagicMock()
+        client.convert.side_effect = Exception("Conversion failed")
+        self.main_window._logger = MagicMock()
+        self.main_window.result = MagicMock()
 
-    #     self.main_window.convert(client, "USD", "EUR", "5.00")
+        # Mock QMessageBox to prevent it from displaying
+        with patch.object(QMessageBox, "critical") as mock_critical:
+            self.main_window.convert(client, "USD", "EUR", "5.00")
 
-    #     client.convert.assert_called_with("USD", "EUR", "5.00")
-    #     self.main_window._logger.error.assert_called_with("Failed to convert: Conversion failed")
-    #     self.main_window.result.setText.assert_not_called()
+            # Assert QMessageBox.critical was called
+            mock_critical.assert_called_once_with(
+                self.main_window.window, "Error", "Failed to convert: Conversion failed"
+            )
 
+        # Verify other behaviors
+        client.convert.assert_called_with("USD", "EUR", "5.00")
+        self.main_window._logger.error.assert_called_with("Failed to convert: Conversion failed")
+        self.main_window.result.setText.assert_not_called()
